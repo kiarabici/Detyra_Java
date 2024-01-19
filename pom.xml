@@ -7,7 +7,7 @@
     <groupId>com.example</groupId>
     <artifactId>detyre-kursi-greisi-alba</artifactId>
     <version>1.0-SNAPSHOT</version>
-    <answer>detyre-kursi-greisi-alba</answer>
+    <name>detyre-kursi-greisi-alba</name>
     <packaging>war</packaging>
 
     <properties>
@@ -28,6 +28,11 @@
             <groupId>org.postgresql</groupId>
             <artifactId>postgresql</artifactId>
             <version>42.7.1</version>
+        </dependency>
+        <dependency>
+            <groupId>javax.servlet</groupId>
+            <artifactId>jstl</artifactId>
+            <version>1.2</version>
         </dependency>
         <dependency>
             <groupId>org.glassfish.jersey.containers</groupId>

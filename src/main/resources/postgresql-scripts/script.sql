@@ -5,36 +5,36 @@ CREATE TABLE USERS
     password VARCHAR(255) NOT NULL,
     email    VARCHAR(255) NOT NULL
 );
-CREATE TABLE Quiz
+CREATE TABLE QUIZZES
 (
     id     SERIAL PRIMARY KEY,
     answer VARCHAR(255) NOT NULL
 );
 
-CREATE TABLE Question
+CREATE TABLE QUESTIONS
 (
     id          SERIAL PRIMARY KEY,
     quiz_id     INTEGER REFERENCES Quiz (id),
     index       INT          NOT NULL,
-    answer      VARCHAR(255) NOT NULL,
-    rightAnswer VARCHAR(255) NOT NULL
+    name      VARCHAR(255) NOT NULL,
+    answer      VARCHAR(255) NOT NULL
 );
 
-CREATE TABLE Option
+CREATE TABLE OPTIONS
 (
     id          SERIAL PRIMARY KEY,
     question_id INTEGER REFERENCES Question (id),
     value       VARCHAR(255) NOT NULL
 );
 
-CREATE TABLE Result
+CREATE TABLE RESULTS
 (
     id       SERIAL PRIMARY KEY,
     quiz_id  INTEGER REFERENCES Quiz (id),
     username VARCHAR(255) NOT NULL
 );
 
-CREATE TABLE UserAnswer
+CREATE TABLE USER_ANSWERS
 (
     id          SERIAL PRIMARY KEY,
     result_id   INTEGER REFERENCES Result (id),

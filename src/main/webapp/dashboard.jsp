@@ -1,6 +1,8 @@
 <%@ page import="com.example.detyrekursigreisialba.model.Quiz" %>
 <%@ page import="com.example.detyrekursigreisialba.model.Question" %>
-<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ page import="java.util.List" %>
+<%@ page import="com.example.detyrekursigreisialba.service.QuizService" %>
+<%@ page contentType="text/html;charset=UTF-8" %>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -57,15 +59,24 @@
 </head>
 <body>
 <header>
-    <h2>Welcome to Your Dashboard</h2>
+    <h2>Quizes Online</h2>
 </header>
 
 <div class="container">
-    <!-- Display a list of quizzes -->
+    <%
+        QuizService quizService = new QuizService();
+        List<Quiz> quizzes = quizService.getAllQuizzes();
+        int selectedQuizId = 0;
+        if (request.getParameter("selectedQuizId") != null) {
+            selectedQuizId = Integer.parseInt(request.getParameter("selectedQuizId"));
+        }
+        List<Question> questions = quizService.getQuestionsForQuiz(selectedQuizId);
+    %>
     <h3>Quizzes</h3>
     <ul>
         <% for (Quiz quiz : quizzes) { %>
-        <li><a href="dashboard.jsp?selectedQuizId=<%= quiz.getId() %>"><%= quiz.getName() %></a></li>
+        <li><a href="quiz?selectedQuizId=<%= quiz.getId() %>"><%= quiz.getName() %>
+        </a></li>
         <% } %>
     </ul>
 
@@ -75,14 +86,12 @@
         for (Question question : questions) {
     %>
     <div>
-        <p><%= question.getName() %></p>
-        <!-- Add other HTML for displaying options, etc. -->
+        <p><%= question.getName() %>
+        </p>
     </div>
     <%
         }
     %>
-
-    <!-- Include the quiz form here -->
 </div>
 </body>
 </html>

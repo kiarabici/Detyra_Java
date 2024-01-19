@@ -1,4 +1,6 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
+<%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -95,11 +97,11 @@
 
     <form action="auth?action=register" method="post">
         <label for="username">Username:</label>
-        <input type="text" name="username" required><br>
+        <input type="text" id="username" name="username" required><br>
         <label for="password">Password:</label>
-        <input type="password" name="password" required><br>
+        <input type="password" id="password" name="password" required><br>
         <label for="email">Email:</label>
-        <input type="email" name="email" required><br>
+        <input type="email" id="email" name="email" required><br>
         <button type="submit">Register</button>
     </form>
 </div>

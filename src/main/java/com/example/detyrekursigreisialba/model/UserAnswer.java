@@ -2,6 +2,8 @@ package com.example.detyrekursigreisialba.model;
 
 public class UserAnswer {
     private int quizId;
+    private String answer;
+    private boolean correct;
 
     public int getQuizId() {
         return quizId;
@@ -11,9 +13,6 @@ public class UserAnswer {
         this.quizId = quizId;
     }
 
-    private String answer;
-    private boolean correct;
-
     public boolean isCorrect() {
         return correct;
     }
@@ -22,9 +21,9 @@ public class UserAnswer {
         this.correct = correct;
     }
 
-    public UserAnswer(int quizId, String name, boolean correct) {
+    public UserAnswer(int quizId, String answer, boolean correct) {
         this.quizId = quizId;
-        this.answer = name;
+        this.answer = answer;
         this.correct = correct;
     }
 

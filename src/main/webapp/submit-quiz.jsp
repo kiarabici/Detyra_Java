@@ -1,12 +1,12 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
-<%@ page import="java.util.Map" %>
-<%@ page import="java.util.HashMap" %>
-<%@ page import="java.util.List" %>
-<%@ page import="java.util.ArrayList" %>
+<%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ page import="com.example.detyrekursigreisialba.model.Question" %>
 <%@ page import="com.example.detyrekursigreisialba.model.UserAnswer" %>
 <%@ page import="com.example.detyrekursigreisialba.model.Result" %>
 <%@ page import="com.example.detyrekursigreisialba.service.QuizService" %>
+<%@ page import="java.util.List" %>
+<%@ page import="java.util.ArrayList" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+
 
 <%
     QuizService quizService = new QuizService();
@@ -15,29 +15,25 @@
     String username = request.getParameter("username");
     int currentQuestion = Integer.parseInt(request.getParameter("currentQuestion"));
 
-    Map<Integer, String> userAnswers = new HashMap<>();
-
-    List<Question> questions = quizService.getQuestionsForQuiz(quizId);
-    for (Question question : questions) {
-        String answer = request.getParameter("question" + question.getId());
-        userAnswers.put(question.getId(), answer);
+    List<UserAnswer> userAnswers = (List<UserAnswer>) session.getAttribute("userAnswers");
+    if (userAnswers == null) {
+        userAnswers = new ArrayList<>();
     }
 
+    // Fetching the current answer
     String currentAnswer = request.getParameter("question" + currentQuestion);
-    userAnswers.put(currentQuestion, currentAnswer);
 
-    // For simplicity, check correctness based on the example's dummy data
-    boolean isCurrentAnswerCorrect = checkAnswerCquizServiceorrectness(currentQuestion, currentAnswer);
+    // Dummy correctness check based on the example's dummy data
+    List<Question> questions = quizService.getQuestionsForQuiz(quizId);
+    boolean isCurrentAnswerCorrect = currentAnswer.equals(questions.get(currentQuestion - 1).getAnswer());
 
-    List<UserAnswer> userAnswerList = (List<UserAnswer>) session.getAttribute("userAnswers");
-    if (userAnswerList == null) {
-        userAnswerList = new ArrayList<>();
-    }
+    // Declare the variable outside the scriptlet for JSTL access
+    request.setAttribute("isCurrentAnswerCorrect", isCurrentAnswerCorrect);
 
-    UserAnswer userAnswer = new UserAnswer(quizId, username, isCurrentAnswerCorrect);
-    userAnswerList.add(userAnswer);
+    UserAnswer userAnswer = new UserAnswer(quizId, currentAnswer, isCurrentAnswerCorrect);
+    userAnswers.add(userAnswer);
 
-    session.setAttribute("userAnswers", userAnswerList);
+    session.setAttribute("userAnswers", userAnswers);
 
     int nextQuestion = currentQuestion + 1;
     if (nextQuestion <= questions.size()) {
@@ -46,20 +42,14 @@
         Result result = new Result();
         result.setQuizId(quizId);
         result.setUsername(username);
+        result.setUserAnswers(userAnswers); // Assuming Result has a setUserAnswers method
         quizService.saveResult(result);
 
         response.sendRedirect("finish.jsp");
     }
-
-    // Method to check correctness
-    private boolean checkAnswerCorrectness (int questionId, String userAnswer) {
-    // Dummy correctness check based on the example's dummy data
-    Question question = DummyData.getQuestionById(questionId);
-    return userAnswer.equals(question.getRightAnswer());
-    }
 %>
 
-<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <!DOCTYPE html>
 <html lang="en">
 <head>

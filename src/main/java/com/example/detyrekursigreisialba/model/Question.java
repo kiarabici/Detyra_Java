@@ -5,6 +5,10 @@ import java.util.List;
 public class Question {
     private int id;
     private int quizId;
+    private int index;
+    private String name;
+    private String answer;
+    private List<String> options;
 
     public void setId(int id) {
         this.id = id;
@@ -17,11 +21,6 @@ public class Question {
     public void setQuizId(int quizId) {
         this.quizId = quizId;
     }
-
-    private int index;
-    private String name;
-    private List<String> options;
-    private String rightAnswer;
 
     public int getId() {
         return id;
@@ -44,7 +43,7 @@ public class Question {
         this.index = index;
         this.name = name;
         this.options = options;
-        this.rightAnswer = rightAnswer;
+        this.answer = rightAnswer;
     }
 
     public String getName() {
@@ -63,11 +62,11 @@ public class Question {
         this.options = options;
     }
 
-    public String getRightAnswer() {
-        return rightAnswer;
+    public String getAnswer() {
+        return answer;
     }
 
-    public void setRightAnswer(String rightAnswer) {
-        this.rightAnswer = rightAnswer;
+    public void setAnswer(String answer) {
+        this.answer = answer;
     }
 }
