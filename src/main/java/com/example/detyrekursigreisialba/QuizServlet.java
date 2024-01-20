@@ -20,7 +20,7 @@ public class QuizServlet extends HttpServlet {
         QuizService quizService = new QuizService();
         List<Quiz> quizzes = quizService.getAllQuizzes();
         int selectedQuizId = Integer.parseInt(request.getParameter("selectedQuizId"));
-        List<Question> questions = quizService.getQuestionsForQuiz(selectedQuizId);
+        List<Question> questions = quizService.getQuestionsWithOptions(selectedQuizId);
 
         request.setAttribute("quizzes", quizzes);
         request.setAttribute("questions", questions);

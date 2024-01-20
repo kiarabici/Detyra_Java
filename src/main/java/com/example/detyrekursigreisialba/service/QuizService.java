@@ -1,12 +1,15 @@
 package com.example.detyrekursigreisialba.service;
 
+import com.example.detyrekursigreisialba.model.Option;
 import com.example.detyrekursigreisialba.model.Question;
 import com.example.detyrekursigreisialba.model.Quiz;
 import com.example.detyrekursigreisialba.model.Result;
 
 import java.sql.*;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class QuizService {
 
@@ -34,8 +37,8 @@ public class QuizService {
         return quizzes;
     }
 
-    public List<Question> getQuestionsForQuiz(int quizId) {
-        List<Question> questions = new ArrayList<>();
+    public List<Question> getQuestionsWithOptions(int quizId) {
+        Map<Integer, Question> questionMap = new HashMap<>();
 
         try (Connection connection = DatabaseManager.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM questions WHERE quiz_id = ?")
@@ -44,21 +47,51 @@ public class QuizService {
 
             try (ResultSet resultSet = preparedStatement.executeQuery()) {
                 while (resultSet.next()) {
-                    Question question = new Question();
-                    question.setId(resultSet.getInt("id"));
-                    question.setQuizId(resultSet.getInt("quiz_id"));
-                    question.setIndex(resultSet.getInt("index"));
-                    question.setName(resultSet.getString("name"));
-                    question.setAnswer(resultSet.getString("answer"));
-                    questions.add(question);
+                    int questionId = resultSet.getInt("id");
+                    Question question = questionMap.computeIfAbsent(questionId, id -> {
+                        int qQuizId = 0;
+                        int qIndex = 0;
+                        String qName = null;
+                        try {
+                            qQuizId = resultSet.getInt("quiz_id");
+                            qIndex = resultSet.getInt("index");
+                            qName = resultSet.getString("name");
+                        } catch (SQLException e) {
+                            e.printStackTrace();
+                        }
+                        return new Question(qQuizId, qIndex, qName, new ArrayList<>());
+                    });
+                    List<Option> options = getOptionsForQuestion(questionId);
+                    question.getOptions().addAll(options);
                 }
             }
-
         } catch (SQLException e) {
             e.printStackTrace();
         }
 
-        return questions;
+        return new ArrayList<>(questionMap.values());
+    }
+
+    private List<Option> getOptionsForQuestion(int questionId) {
+        List<Option> options = new ArrayList<>();
+
+        try (Connection connection = DatabaseManager.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM options WHERE question_id = ?")
+        ) {
+            preparedStatement.setInt(1, questionId);
+
+            try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                while (resultSet.next()) {
+                    String value = resultSet.getString("value");
+                    boolean isAnswer = resultSet.getBoolean("is_answer");
+                    options.add(new Option(questionId, value, isAnswer));
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return options;
     }
 
     public void saveResult(Result result) {
@@ -78,4 +111,3 @@ public class QuizService {
         }
     }
 }
-

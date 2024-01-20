@@ -1,5 +1,6 @@
 <%@ page import="com.example.detyrekursigreisialba.model.Quiz" %>
 <%@ page import="com.example.detyrekursigreisialba.model.Question" %>
+<%@ page import="com.example.detyrekursigreisialba.model.Option" %>
 <%@ page import="java.util.List" %>
 <%@ page import="com.example.detyrekursigreisialba.service.QuizService" %>
 <%@ page contentType="text/html;charset=UTF-8" %>
@@ -55,11 +56,15 @@
             border-radius: 8px;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
         }
+
+        .dropdown {
+            margin-bottom: 1em;
+        }
     </style>
 </head>
 <body>
 <header>
-    <h2>Quizes Online</h2>
+    <h2>Quizzes Online</h2>
 </header>
 
 <div class="container">
@@ -70,7 +75,7 @@
         if (request.getParameter("selectedQuizId") != null) {
             selectedQuizId = Integer.parseInt(request.getParameter("selectedQuizId"));
         }
-        List<Question> questions = quizService.getQuestionsForQuiz(selectedQuizId);
+        List<Question> questions = quizService.getQuestionsWithOptions(selectedQuizId);
     %>
     <h3>Quizzes</h3>
     <ul>
@@ -81,17 +86,30 @@
     </ul>
 
     <!-- Display questions for the selected quiz -->
-    <h3>Quiz Questions</h3>
-    <%
-        for (Question question : questions) {
-    %>
-    <div>
-        <p><%= question.getName() %>
-        </p>
-    </div>
-    <%
-        }
-    %>
+    <form method="post" action="quiz.jsp">
+        <input type="hidden" name="quizId" value="<%= selectedQuizId %>"/>
+        <h3>Quiz Questions</h3>
+        <%
+            for (Question question : questions) {
+        %>
+        <div class="dropdown">
+            <p><%= question.getName() %>
+            </p>
+            <label>
+                <select name="question<%= question.getIndex() %>" required>
+                    <option value="" selected disabled>Select an option</option>
+                    <% for (Option option : question.getOptions()) { %>
+                    <option value="<%= option.getValue() %>"><%= option.getValue() %>
+                    </option>
+                    <% } %>
+                </select>
+            </label>
+        </div>
+        <%
+            }
+        %>
+        <button type="submit">Submit Answers</button>
+    </form>
 </div>
 </body>
 </html>

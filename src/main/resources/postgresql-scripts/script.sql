@@ -13,19 +13,20 @@ CREATE TABLE QUIZZES
 
 CREATE TABLE QUESTIONS
 (
-    id          SERIAL PRIMARY KEY,
-    quiz_id     INTEGER REFERENCES Quiz (id),
-    index       INT          NOT NULL,
-    name      VARCHAR(255) NOT NULL,
-    answer      VARCHAR(255) NOT NULL
+    id      SERIAL PRIMARY KEY,
+    quiz_id INTEGER REFERENCES Quiz (id),
+    index   INT          NOT NULL,
+    name    VARCHAR(255) NOT NULL
 );
 
 CREATE TABLE OPTIONS
 (
     id          SERIAL PRIMARY KEY,
     question_id INTEGER REFERENCES Question (id),
-    value       VARCHAR(255) NOT NULL
+    value       VARCHAR(255) NOT NULL,
+    is_answer   BOOLEAN      NOT NULL
 );
+
 
 CREATE TABLE RESULTS
 (

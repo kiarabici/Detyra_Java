@@ -7,8 +7,14 @@ public class Question {
     private int quizId;
     private int index;
     private String name;
-    private String answer;
-    private List<String> options;
+    private List<Option> options;
+
+    public Question(int quizId, int index, String name, List<Option> options) {
+        this.quizId = quizId;
+        this.index = index;
+        this.name = name;
+        this.options = options;
+    }
 
     public void setId(int id) {
         this.id = id;
@@ -35,15 +41,6 @@ public class Question {
     }
 
     public Question() {
-
-    }
-
-    public Question(int quizId, int index, String name, List<String> options, String rightAnswer) {
-        this.quizId = quizId;
-        this.index = index;
-        this.name = name;
-        this.options = options;
-        this.answer = rightAnswer;
     }
 
     public String getName() {
@@ -54,19 +51,11 @@ public class Question {
         this.name = name;
     }
 
-    public List<String> getOptions() {
+    public List<Option> getOptions() {
         return options;
     }
 
-    public void setOptions(List<String> options) {
+    public void setOptions(List<Option> options) {
         this.options = options;
-    }
-
-    public String getAnswer() {
-        return answer;
-    }
-
-    public void setAnswer(String answer) {
-        this.answer = answer;
     }
 }
