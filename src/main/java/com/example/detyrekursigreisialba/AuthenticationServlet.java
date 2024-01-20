@@ -3,7 +3,10 @@ package com.example.detyrekursigreisialba;
 import com.example.detyrekursigreisialba.model.User;
 import com.example.detyrekursigreisialba.model.enums.UserRole;
 import com.example.detyrekursigreisialba.service.DatabaseManager;
+import org.postgresql.util.PSQLException;
 
+import javax.servlet.RequestDispatcher;
+import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -17,6 +20,8 @@ import java.sql.SQLException;
 
 @WebServlet("/auth")
 public class AuthenticationServlet extends HttpServlet {
+    boolean userNameExists = false;
+
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
         String action = request.getParameter("action");
 
@@ -29,31 +34,30 @@ public class AuthenticationServlet extends HttpServlet {
         }
     }
 
-    private void registerUser(HttpServletRequest request, HttpServletResponse response)
-            throws IOException {
+    private void registerUser(HttpServletRequest request, HttpServletResponse response) throws IOException {
         String username = request.getParameter("username");
         String password = request.getParameter("password");
         String email = request.getParameter("email");
 
-        if (username == null || password == null || email == null ||
-                username.trim().isEmpty() || password.trim().isEmpty() || email.trim().isEmpty()) {
-            response.sendRedirect("register-failure.jsp");
-            return;
-        }
-
-        if (!isValidUsername(username) || !isValidPassword(password) || !isValidEmail(email)) {
-            response.sendRedirect("register-failure.jsp");
-            return;
-        }
-
         User newUser = new User(username, password, email, UserRole.USER);
 
-        if (saveUserToDatabase(newUser)) {
-            response.sendRedirect("dashboard.jsp");
-        } else {
-            response.sendRedirect("register-failure.jsp");
+        try {
+            if (saveUserToDatabase(newUser)) {
+                response.sendRedirect("login.jsp");
+            } else {
+                if (userNameExists) {
+                    request.setAttribute("registerError", "Username " + username + " already exists");
+                    RequestDispatcher dispatcher = request.getRequestDispatcher("register.jsp");
+                    dispatcher.forward(request, response);
+                }
+                response.sendRedirect("register-failure.jsp");
+            }
+        } catch (ServletException e) {
+            e.printStackTrace();
         }
+
     }
+
 
     private boolean saveUserToDatabase(User user) {
         try (Connection connection = DatabaseManager.getConnection()) {
@@ -62,26 +66,19 @@ public class AuthenticationServlet extends HttpServlet {
                 statement.setString(1, user.getUsername());
                 statement.setString(2, user.getPassword());
                 statement.setString(3, user.getEmail());
-                int rowsAffected = statement.executeUpdate();
-                return rowsAffected > 0;
+                statement.executeUpdate();
+                return true;
+
             }
-        } catch (SQLException e) {
-            e.printStackTrace();
+        } catch (PSQLException exception) {
+            userNameExists = true;
             return false;
+        } catch (SQLException exception) {
+            return false;
+
         }
     }
 
-    private boolean isValidUsername(String username) {
-        return username.length() >= 8;
-    }
-
-    private boolean isValidPassword(String password) {
-        return password.length() >= 8 && password.matches(".*[a-zA-Z].*") && password.matches(".*\\d.*");
-    }
-
-    private boolean isValidEmail(String email) {
-        return email.matches("[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}");
-    }
 
     private void loginUser(HttpServletRequest request, HttpServletResponse response)
             throws IOException {

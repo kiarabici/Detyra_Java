@@ -1,7 +1,7 @@
 CREATE TABLE USERS
 (
     id       SERIAL PRIMARY KEY,
-    username VARCHAR(50)  NOT NULL,
+    username VARCHAR(50)  NOT NULL UNIQUE,
     password VARCHAR(50)  NOT NULL,
     email    VARCHAR(255) NOT NULL,
     role     VARCHAR(50)

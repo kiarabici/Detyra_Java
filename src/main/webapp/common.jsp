@@ -13,13 +13,13 @@
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 <header class="bg-light p-3">
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
-        <a class="navbar-brand" href="index.jsp">Quizzes Online</a>
+        <a class="navbar-brand" href="dashboard.jsp">Quizzes Online</a>
         <ul class="navbar-nav ml-auto">
             <li class="nav-item">
-                <a class="nav-link" href="login.jsp"><i class="fas fa-sign-in-alt"></i> Login</a>
+                <a class="nav-link" href="login.jsp"><i class="fas fa-user"></i> Profile</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="register.jsp"><i class="fas fa-user-plus"></i> Sign Up</a>
+                <a class="nav-link" href="register.jsp"><i class="fas fa-sign-out-alt"></i> Log Out</a>
             </li>
         </ul>
     </nav>
