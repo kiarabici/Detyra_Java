@@ -1,37 +1,39 @@
 package com.example.detyrekursigreisialba.model;
 
 public class UserAnswer {
-    private int quizId;
-    private String answer;
-    private boolean correct;
+    private int id;
+    private int resultId;
+    private int optionId;
 
-    public int getQuizId() {
-        return quizId;
+    public UserAnswer() {
     }
 
-    public void setQuizId(int quizId) {
-        this.quizId = quizId;
+    public UserAnswer(int resultId, int optionId) {
+        this.resultId = resultId;
+        this.optionId = optionId;
     }
 
-    public boolean isCorrect() {
-        return correct;
+    public int getResultId() {
+        return resultId;
     }
 
-    public void setCorrect(boolean correct) {
-        this.correct = correct;
+    public void setResultId(int resultId) {
+        this.resultId = resultId;
     }
 
-    public UserAnswer(int quizId, String answer, boolean correct) {
-        this.quizId = quizId;
-        this.answer = answer;
-        this.correct = correct;
+    public int getOptionId() {
+        return optionId;
     }
 
-    public String getAnswer() {
-        return answer;
+    public void setOptionId(int optionId) {
+        this.optionId = optionId;
     }
 
-    public void setAnswer(String answer) {
-        this.answer = answer;
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public int getId() {
+        return id;
     }
 }

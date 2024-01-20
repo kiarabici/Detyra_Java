@@ -1,6 +1,7 @@
 package com.example.detyrekursigreisialba;
 
 import com.example.detyrekursigreisialba.model.User;
+import com.example.detyrekursigreisialba.model.enums.UserRole;
 import com.example.detyrekursigreisialba.service.DatabaseManager;
 
 import javax.servlet.annotation.WebServlet;
@@ -36,24 +37,19 @@ public class AuthenticationServlet extends HttpServlet {
 
         if (username == null || password == null || email == null ||
                 username.trim().isEmpty() || password.trim().isEmpty() || email.trim().isEmpty()) {
-            // Invalid input; redirect to failure page
             response.sendRedirect("register-failure.jsp");
             return;
         }
 
-        // Perform more detailed input validation as needed
         if (!isValidUsername(username) || !isValidPassword(password) || !isValidEmail(email)) {
-            // Validation failed; redirect to failure page
             response.sendRedirect("register-failure.jsp");
             return;
         }
 
-        // Input is valid
-        User newUser = new User(username, password, email);
+        User newUser = new User(username, password, email, UserRole.USER);
 
-        // Save newUser to the database
         if (saveUserToDatabase(newUser)) {
-            response.sendRedirect("register-success.jsp");
+            response.sendRedirect("dashboard.jsp");
         } else {
             response.sendRedirect("register-failure.jsp");
         }
@@ -103,6 +99,7 @@ public class AuthenticationServlet extends HttpServlet {
                         // Authentication successful
                         HttpSession session = request.getSession(true);
                         session.setAttribute("username", username);
+                        session.setAttribute("role", resultSet.getString("role"));
                         response.sendRedirect("dashboard.jsp");
                     } else {
                         // Authentication failed
@@ -112,7 +109,7 @@ public class AuthenticationServlet extends HttpServlet {
             }
         } catch (SQLException e) {
             e.printStackTrace();
-            response.sendRedirect("error.jsp");
+            response.sendRedirect("login-failure.jsp");
         }
     }
 

@@ -1,14 +1,27 @@
 package com.example.detyrekursigreisialba.model;
 
+
+import com.example.detyrekursigreisialba.model.enums.UserRole;
+
 public class User {
     private String username;
     private String password;
     private String email;
+    private UserRole role;
 
-    public User(String username, String password, String email) {
+    public User(String username, String password, String email, UserRole userRole) {
         this.username = username;
         this.password = password;
         this.email = email;
+        this.role = userRole;
+    }
+
+    public UserRole getRole() {
+        return role;
+    }
+
+    public void setRole(UserRole role) {
+        this.role = role;
     }
 
     public String getUsername() {

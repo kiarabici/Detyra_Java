@@ -97,12 +97,11 @@ public class QuizService {
     public void saveResult(Result result) {
         try (Connection connection = DatabaseManager.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(
-                     "INSERT INTO results (quiz_id, username, answers) VALUES (?, ?, ?)"
+                     "INSERT INTO results (quiz_id, username) VALUES (?, ?)"
              )
         ) {
             preparedStatement.setInt(1, result.getQuizId());
             preparedStatement.setString(2, result.getUsername());
-            preparedStatement.setObject(3, result.getUserAnswers());
 
             preparedStatement.executeUpdate();
 
