@@ -1,9 +1,8 @@
 <%@ include file="common.jsp" %>
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
-
 <div class="container mt-5">
-    <p><a href="index.jsp" class="btn btn-secondary">Back</a></p>
+    <p><a href="dashboard.jsp" class="btn btn-secondary">Back</a></p>
     <c:if test="${param.error ne null}">
         <p class="error-message">Registration failed. Please check your input and try again.</p>
     </c:if>

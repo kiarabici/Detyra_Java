@@ -9,7 +9,6 @@
 <%
     session = request.getSession();
     String username = (String) session.getAttribute("username");
-
     if (Objects.isNull(username)) {
         response.sendRedirect("index.jsp");
     }

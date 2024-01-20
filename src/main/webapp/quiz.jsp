@@ -16,7 +16,6 @@
     if (Objects.isNull(username)) {
         response.sendRedirect("index.jsp");
     }
-
     QuizService quizService = new QuizService();
     int quizId = Integer.parseInt(request.getParameter("quizId"));
     int currentQuestion = (request.getParameter("currentQuestion") != null)
