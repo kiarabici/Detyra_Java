@@ -34,7 +34,7 @@ public class AuthenticationServlet extends HttpServlet {
         }
     }
 
-    private void registerUser(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    private void registerUser(HttpServletRequest request, HttpServletResponse response) {
         String username = request.getParameter("username");
         String password = request.getParameter("password");
         String email = request.getParameter("email");
@@ -49,15 +49,14 @@ public class AuthenticationServlet extends HttpServlet {
                     request.setAttribute("registerError", "Username " + username + " already exists");
                     RequestDispatcher dispatcher = request.getRequestDispatcher("register.jsp");
                     dispatcher.forward(request, response);
+                } else {
+                    response.sendRedirect("register-failure.jsp");
                 }
-                response.sendRedirect("register-failure.jsp");
             }
-        } catch (ServletException e) {
+        } catch (ServletException | IOException e) {
             e.printStackTrace();
         }
-
     }
-
 
     private boolean saveUserToDatabase(User user) {
         try (Connection connection = DatabaseManager.getConnection()) {
@@ -75,10 +74,8 @@ public class AuthenticationServlet extends HttpServlet {
             return false;
         } catch (SQLException exception) {
             return false;
-
         }
     }
-
 
     private void loginUser(HttpServletRequest request, HttpServletResponse response)
             throws IOException {

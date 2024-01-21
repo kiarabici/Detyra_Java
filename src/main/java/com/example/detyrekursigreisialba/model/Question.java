@@ -9,7 +9,8 @@ public class Question {
     private String name;
     private List<Option> options;
 
-    public Question(int quizId, int index, String name, List<Option> options) {
+    public Question(int id, int quizId, int index, String name, List<Option> options) {
+        this.id = id;
         this.quizId = quizId;
         this.index = index;
         this.name = name;

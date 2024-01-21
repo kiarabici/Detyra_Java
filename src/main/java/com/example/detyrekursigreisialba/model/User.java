@@ -4,6 +4,7 @@ package com.example.detyrekursigreisialba.model;
 import com.example.detyrekursigreisialba.model.enums.UserRole;
 
 public class User {
+    private int id;
     private String username;
     private String password;
     private String email;
@@ -14,6 +15,10 @@ public class User {
         this.password = password;
         this.email = email;
         this.role = userRole;
+    }
+
+    public User() {
+
     }
 
     public UserRole getRole() {
@@ -46,5 +51,13 @@ public class User {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 }

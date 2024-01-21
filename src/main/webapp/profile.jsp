@@ -1,6 +1,16 @@
+<%@ page import="java.util.Objects" %>
 <%@ include file="common.jsp" %>
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%
+    session = request.getSession();
+    String username = (String) session.getAttribute("username");
+    if (Objects.isNull(username)) {
+        response.sendRedirect("index.jsp");
+    }
+
+%>
+%>
 <script>
     function validateForm() {
         const username = document.getElementById("username").value;
@@ -35,21 +45,22 @@
     }
 </script>
 <div class="container mt-5">
+    <h2 class="header-panel">Profile</h2>
     <p><a href="dashboard.jsp" class="btn btn-secondary">Back</a></p>
     <form action="auth?action=register" method="post" onsubmit="return validateForm()">
         <div class="mb-3">
             <label for="username" class="form-label">Username:</label>
-            <input type="text" id="username" name="username" class="form-control">
+            <input type="text" id="username" value="<%=username%>" name="username" class="form-control">
             <div id="usernameError" style="color: red;"></div>
         </div>
         <div class="mb-3">
             <label for="password" class="form-label">Password:</label>
-            <input type="password" id="password" name="password" class="form-control">
+            <input type="password" id="password" value="<%=password%> name=" password" class="form-control">
             <div id="passwordError" style="color: red;"></div>
         </div>
         <div class="mb-3">
             <label for="email" class="form-label">Email:</label>
-            <input type="text" id="email" name="email" class="form-control">
+            <input type="text" id="email" name="email" value="<%=email%> class=" form-control">
             <div id="emailError" style="color: red;"></div>
             <c:if test="${not empty requestScope.registerError}">
                 <div class="error-message" style="color: red;">${requestScope.registerError}</div>

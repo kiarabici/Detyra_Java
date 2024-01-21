@@ -1,9 +1,6 @@
 package com.example.detyrekursigreisialba.service;
 
-import com.example.detyrekursigreisialba.model.Option;
-import com.example.detyrekursigreisialba.model.Question;
-import com.example.detyrekursigreisialba.model.Quiz;
-import com.example.detyrekursigreisialba.model.Result;
+import com.example.detyrekursigreisialba.model.*;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -59,7 +56,7 @@ public class QuizService {
                         } catch (SQLException e) {
                             e.printStackTrace();
                         }
-                        return new Question(qQuizId, qIndex, qName, new ArrayList<>());
+                        return new Question(questionId, qQuizId, qIndex, qName, new ArrayList<>());
                     });
                     List<Option> options = getOptionsForQuestion(questionId);
                     question.getOptions().addAll(options);
@@ -82,9 +79,10 @@ public class QuizService {
 
             try (ResultSet resultSet = preparedStatement.executeQuery()) {
                 while (resultSet.next()) {
+                    int id = resultSet.getInt("id");
                     String value = resultSet.getString("value");
                     boolean isAnswer = resultSet.getBoolean("is_answer");
-                    options.add(new Option(questionId, value, isAnswer));
+                    options.add(new Option(id, questionId, value, isAnswer));
                 }
             }
         } catch (SQLException e) {
@@ -94,19 +92,53 @@ public class QuizService {
         return options;
     }
 
-    public void saveResult(Result result) {
+    public int saveResult(Result result) {
+        int generatedResultId = -1;
         try (Connection connection = DatabaseManager.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(
-                     "INSERT INTO results (quiz_id, username) VALUES (?, ?)"
+                     "INSERT INTO results (quiz_id, username) VALUES (?, ?);",
+                     Statement.RETURN_GENERATED_KEYS
              )
         ) {
             preparedStatement.setInt(1, result.getQuizId());
             preparedStatement.setString(2, result.getUsername());
-
             preparedStatement.executeUpdate();
 
+            ResultSet generatedKeys = preparedStatement.getGeneratedKeys();
+            if (generatedKeys.next()) {
+                generatedResultId = generatedKeys.getInt(1);
+            }
         } catch (SQLException e) {
             e.printStackTrace();
         }
+
+        return generatedResultId;
+    }
+
+    public void saveUserQuizResults(Result result, List<UserAnswer> userAnswers) {
+        int resultId = saveResult(result);
+        try (Connection connection = DatabaseManager.getConnection()) {
+            String sql = "INSERT INTO user_answers (result_id, question_id, option_id) VALUES (?, ?, ?)";
+            try (PreparedStatement statement = connection.prepareStatement(sql)) {
+                for (UserAnswer userAnswer : userAnswers) {
+                    statement.setInt(1, resultId);
+                    statement.setInt(2, userAnswer.getQuestionId());
+                    statement.setInt(3, userAnswer.getOptionId());
+                    statement.addBatch();
+                }
+                statement.executeBatch();
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public int findCorrectOptionId(List<Option> options) {
+        for (Option option : options) {
+            if (option.isCorrectAnswer()) {
+                return option.getId();
+            }
+        }
+        return -1;
     }
 }

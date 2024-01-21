@@ -16,10 +16,10 @@
         <a class="navbar-brand" href="dashboard.jsp">Quizzes Online</a>
         <ul class="navbar-nav ml-auto">
             <li class="nav-item">
-                <a class="nav-link" href="login.jsp"><i class="fas fa-user"></i> Profile</a>
+                <a class="nav-link" href="profile.jsp"><i class="fas fa-user"></i> Profile</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="register.jsp"><i class="fas fa-sign-out-alt"></i> Log Out</a>
+                <a class="nav-link" href="logout.jsp"><i class="fas fa-sign-out-alt"></i> Log Out</a>
             </li>
         </ul>
     </nav>

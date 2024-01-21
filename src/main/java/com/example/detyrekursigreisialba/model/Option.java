@@ -6,13 +6,14 @@ public class Option {
     private String value;
     private boolean isAnswer;
 
-    public Option(int questionId, String value, boolean isAnswer) {
+    public Option(int id, int questionId, String value, boolean isAnswer) {
+        this.id = id;
         this.questionId = questionId;
         this.value = value;
         this.isAnswer = isAnswer;
     }
 
-    public boolean getAnswer() {
+    public boolean isCorrectAnswer() {
         return isAnswer;
     }
 
