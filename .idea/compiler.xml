@@ -9,8 +9,5 @@
         <module name="detyre-kursi-greisi-alba" />
       </profile>
     </annotationProcessing>
-    <bytecodeTargetLevel>
-      <module name="detyre-kursi-greisi-alba" target="1.8" />
-    </bytecodeTargetLevel>
   </component>
 </project>

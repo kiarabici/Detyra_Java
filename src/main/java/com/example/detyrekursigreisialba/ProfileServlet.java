@@ -11,6 +11,7 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -22,16 +23,23 @@ public class ProfileServlet extends HttpServlet {
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response) {
         String username = request.getParameter("username");
-        String password = request.getParameter("password");
         String email = request.getParameter("email");
+        UserRole role = UserRole.fromString(request.getParameter("role"));
+        int id = Integer.parseInt(request.getParameter("id"));
 
-        User newUser = new User(username, password, email, UserRole.USER);
+        User newUser = new User(username, "", email, UserRole.USER);
 
         try {
-            if (saveProfileChanges(newUser)) {
+            if (saveProfileChanges(id, newUser)) {
+                HttpSession session = request.getSession(true);
+                session.setAttribute("id", "" + id);
+                session.setAttribute("username", username);
+                session.setAttribute("email", email);
+                session.setAttribute("role", role.getValue());
+
                 response.sendRedirect("dashboard.jsp");
             } else {
-                request.setAttribute("registerError", "Username " + username + " already exists");
+                request.setAttribute("registerError", "Username " + username + " is taken");
                 RequestDispatcher dispatcher = request.getRequestDispatcher("profile.jsp");
                 dispatcher.forward(request, response);
             }
@@ -40,16 +48,18 @@ public class ProfileServlet extends HttpServlet {
         }
     }
 
-    private boolean saveProfileChanges(User newUser) {
+    private boolean saveProfileChanges(int id, User newUser) {
         try (Connection connection = DatabaseManager.getConnection()) {
-            String sql = "INSERT INTO users (username, password, email) VALUES (?, ?, ?)";
+            String sql = "UPDATE users " +
+                    "SET username = ?, " +
+                    "email = ? " +
+                    "WHERE id = ?;";
             try (PreparedStatement statement = connection.prepareStatement(sql)) {
-                statement.setString(1, user.getUsername());
-                statement.setString(2, user.getPassword());
-                statement.setString(3, user.getEmail());
+                statement.setString(1, newUser.getUsername());
+                statement.setString(2, newUser.getEmail());
+                statement.setInt(3, id);  // Use setInt for the ID
                 statement.executeUpdate();
                 return true;
-
             }
         } catch (PSQLException exception) {
             userNameExists = true;

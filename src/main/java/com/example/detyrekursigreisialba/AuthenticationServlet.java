@@ -60,11 +60,12 @@ public class AuthenticationServlet extends HttpServlet {
 
     private boolean saveUserToDatabase(User user) {
         try (Connection connection = DatabaseManager.getConnection()) {
-            String sql = "INSERT INTO users (username, password, email) VALUES (?, ?, ?)";
+            String sql = "INSERT INTO users (username, password, email, role) VALUES (?, ?, ?, ?)";
             try (PreparedStatement statement = connection.prepareStatement(sql)) {
                 statement.setString(1, user.getUsername());
                 statement.setString(2, user.getPassword());
                 statement.setString(3, user.getEmail());
+                statement.setString(4, user.getRole().getValue());
                 statement.executeUpdate();
                 return true;
 
@@ -92,7 +93,9 @@ public class AuthenticationServlet extends HttpServlet {
                     if (resultSet.next()) {
                         // Authentication successful
                         HttpSession session = request.getSession(true);
+                        session.setAttribute("id", "" + resultSet.getInt("id"));
                         session.setAttribute("username", username);
+                        session.setAttribute("email", resultSet.getString("email"));
                         session.setAttribute("role", resultSet.getString("role"));
                         response.sendRedirect("dashboard.jsp");
                     } else {
