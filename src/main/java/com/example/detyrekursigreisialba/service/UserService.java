@@ -13,68 +13,65 @@ public class UserService {
     public UserService() {
     }
 
-    private User findUserByUsername(String username) {
-        User user = new User();
-        try (Connection connection = DatabaseManager.getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement("" +
-                     "SELECT * FROM users where username  = ?")
-        ) {
-            preparedStatement.setString(1, username);
-            try (ResultSet resultSet = preparedStatement.executeQuery()) {
-                while (resultSet.next()) {
-                    int id = resultSet.getInt("id");
-                    String password = resultSet.getString("password");
-                    StringBuilder hiddenPassword = new StringBuilder();
-                    for (int index = 0; index < password.length(); index++) {
-                        hiddenPassword.append(" ");
+    public User getUserById(int userId) {
+        try (Connection connection = DatabaseManager.getConnection()) {
+            String sql = "SELECT id, username, password, email, role FROM users WHERE id = ?";
+            try (PreparedStatement statement = connection.prepareStatement(sql)) {
+                statement.setInt(1, userId);
+                try (ResultSet resultSet = statement.executeQuery()) {
+                    if (resultSet.next()) {
+                        int id = resultSet.getInt("id");
+                        String username = resultSet.getString("username");
+                        String password = resultSet.getString("password");
+                        String email = resultSet.getString("email");
+                        String role = resultSet.getString("role");
+
+                        User user = new User(username, password, email, UserRole.fromString(role));
+                        user.setId(id);
+                        return user;
                     }
-                    String email = resultSet.getString("email");
-                    user = new User(username, hiddenPassword.toString(), email, UserRole.USER);
-                    user.setId(id);
                 }
             }
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        return user;
+        return null;
     }
 
-    public void saveProfileChanges(User updatedUser) {
-        Connection connection = null;
-        try {
-            connection = DatabaseManager.getConnection();
+    public boolean checkPassword(int userId, String providedPassword) {
+        User user = getUserById(userId);
+
+        if (user != null) {
+            String currentPassword = user.getPassword();
+            return currentPassword.equals(providedPassword);
+        }
+        return false;
+    }
+
+    public void updatePassword(int userId, String newPassword) {
+        try (Connection connection = DatabaseManager.getConnection()) {
+            String sql = "UPDATE users SET password = ? WHERE id = ?";
+            try (PreparedStatement statement = connection.prepareStatement(sql)) {
+                statement.setString(1, newPassword);
+                statement.setInt(2, userId);
+                int rowsAffected = statement.executeUpdate();
+            }
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        String query = "UPDATE users " +
-                "SET email = ?, " +
-                "    username = ?, " +
-                "    password = ?, " +
-                "WHERE id = ?";
-        String newEmail = updatedUser.getEmail();
-        String newUsername = updatedUser.getEmail();
-        String newPassword = updatedUser.getPassword();
-        int id = updatedUser.getId();
+    }
 
-        try {
-            assert connection != null;
-            try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
-                preparedStatement.setString(1, newEmail);
-                preparedStatement.setString(2, newUsername);
-                preparedStatement.setString(3, newPassword);
-                {
-                    int rowsUpdated = preparedStatement.executeUpdate();
-
-                    if (rowsUpdated > 0) {
-                        System.out.println("User updated successfully.");
-                    } else {
-                        System.out.println("User not found or no changes made.");
-                    }
-                }
-
-            }
-        } catch (SQLException exception) {
-            exception.printStackTrace();
-        }
+    public boolean saveProfileChanges(int id, User newUser) throws SQLException {
+        Connection connection = DatabaseManager.getConnection();
+        String sql = "UPDATE users " +
+                "SET username = ?, " +
+                "email = ? " +
+                "WHERE id = ?;";
+        PreparedStatement statement = connection.prepareStatement(sql);
+        statement.setString(1, newUser.getUsername());
+        statement.setString(2, newUser.getEmail());
+        statement.setInt(3, id);  // Use setInt for the ID
+        statement.executeUpdate();
+        return true;
     }
 }
