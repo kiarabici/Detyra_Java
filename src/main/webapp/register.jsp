@@ -1,5 +1,4 @@
 <%@ include file="common.jsp" %>
-<%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <script>
     function validateForm() {
@@ -34,7 +33,8 @@
         return true;
     }
 </script>
-<div class="container mt-5">
+<h3 class="text-center">Fill in your credentials to create an account!</h3>
+<div class="container mt-5" class="shadowed" style="background-color: white; border: 1px solid black; padding:20px; width: 40%">
     <p><a href="dashboard.jsp" class="btn btn-secondary">Back</a></p>
     <form action="auth?action=register" method="post" onsubmit="return validateForm()">
         <div class="mb-3">

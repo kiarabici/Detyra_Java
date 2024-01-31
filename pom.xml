@@ -5,9 +5,9 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.example</groupId>
-    <artifactId>detyre-kursi-greisi-alba</artifactId>
+    <artifactId>detyre-kursi-java</artifactId>
     <version>1.0-SNAPSHOT</version>
-    <name>detyre-kursi-greisi-alba</name>
+    <name>detyre-kursi-java</name>
     <packaging>war</packaging>
 
     <properties>

@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/detyre-kursi-greisi-alba.iml" filepath="$PROJECT_DIR$/detyre-kursi-greisi-alba.iml" />
+      <module fileurl="file://$PROJECT_DIR$/detyre-kursi-java.iml" filepath="$PROJECT_DIR$/detyre-kursi-java.iml" />
     </modules>
   </component>
 </project>

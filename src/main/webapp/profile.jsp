@@ -1,14 +1,11 @@
 <%@ page import="java.util.Objects" %>
-<%@ page import="com.example.detyrekursigreisialba.model.enums.UserRole" %>
 <%@ include file="common.jsp" %>
-<%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%
     session = request.getSession();
     String id = (String) session.getAttribute("id");
     String username = (String) session.getAttribute("username");
     String email = (String) session.getAttribute("email");
-    String role = (String) session.getAttribute("role");
     if (Objects.isNull(username)) {
         response.sendRedirect("index.jsp");
     }
